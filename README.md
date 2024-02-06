@@ -21,7 +21,7 @@ A Flask app to simulate functionality for managing funds, generating receipts, d
 1. Clone the repository:
 
    ```
-   git clone https://github.com/devjoshua312/Finance-Entry-Tool-flask.git
+   git clone https://github.com/devjoshua312/Organisation-Management-Tool.git
    ```
 
 2. Change into the project directory:
