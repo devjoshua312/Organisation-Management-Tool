@@ -101,19 +101,19 @@
         </div>
 
         <div class="container">
-            <h3>Files in 'Contents'</h3>
+            <h3>Details of files in 'Contents'</h3>
             {% for file in s3_contents %}
-            <ul>
+            <ol>
                 <li>
-                    <p>Details of {{ file['Key'] }}</p>
-                        <ol>
+                    <p>{{ file['Key'] }}</p>
+                        <ul>
                             <li>Size: {{ file['Size']/1024/1024 }} MB or {{ file['Size'] }} B </li>
                             <li>Last Modified: {{ file['LastModified'] }}</li>
                             <li>Storage Class: {{ file['StorageClass'] }}</li>
                             <li>ETag: {{ file['ETag'] }}</li>
-                        </ol>
+                        </ul>
                 </li>
-            </ul>
+            </ol>
         {% endfor %}
         </div>
 
