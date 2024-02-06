@@ -1,9 +1,0 @@
-Flask
-num2words
-Flask-Login
-python-dotenv
-gunicorn
-pymongo
-dnspython
-easyocr
-boto3
