@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Church App">
+    <title>Dev Page</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" />
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <style>
+      hr {
+         border: 1px solid white;
+      }
+    </style>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('home') }}">Church App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"> <span
+              class="navbar-toggler-icon"></span> </button>
+          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                <a class="nav-link" href="{{ url_for('add_fund_page') }}">Add Fund</a>
+                <a class="nav-link" href="{{ url_for('display_donors') }}">Display Donors</a>
+                <a class="nav-link" href="{{ url_for('verify_receipts') }}">Verify Receipts</a>
+                <a class="nav-link" href="{{ url_for('events') }}">View Events</a>
+                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+    {% if username == 'dev' %}
+    <div class="container">
+        <h1>Dev Page</h1>
+        <hr />
+        <div class="container">
+            <h2>Hi ESVIN!</h2>
+            <h5 id="current-time">The time is: </h5>
+            <h5>The time of your entry is: {{ currenttime }}</h5>
+            <hr />
+            <h5>You are in: {{ current_dir }}</h5>
+            <hr />
+            <h5>The files in this directory are:</h5>
+            <ol>
+                {% for file in files %}
+                <li>{{ file }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        <hr />
+
+        <div class="container">
+            <h2>System Information</h2>
+            <p>Operating System: {{ os }}</p>
+            <p>Release: {{ release }}</p>
+            <p>More info on the OS: </p>
+            <p>Details: {{ version }}</p>
+        </div>
+
+        <hr />
+        
+        <div class="container">
+            <h2>MongoDB Info</h2>
+            <p>Database: {{ db_name }}</p>
+            <p>Collection Names:</p>
+            <ol>
+                {% for collection in collections %}
+                <li>{{ collection }}</li>
+                {% endfor %}
+            </ol>
+            <p>Number of documents: {{ num_docs }}</p>
+        </div>
+
+        <hr />
+        <div class="container">
+            <h2>AWS Info</h2>
+            <p>Bucket: {{ bucket_name }}</p>
+            <p>Objects in bucket</p>
+                <ol>
+                    {% for file in s3_files %}
+                    <li>{{ file }}</li>
+                    {% endfor %}
+                </ol>
+        </div>
+
+        <div class="container">
+            <h3>Files in 'Contents'</h3>
+            {% for file in s3_contents %}
+            <ul>
+                <li>
+                    <p>Details of {{ file['Key'] }}</p>
+                        <ol>
+                            <li>Size: {{ file['Size']/1024/1024 }} MB or {{ file['Size'] }} B </li>
+                            <li>Last Modified: {{ file['LastModified'] }}</li>
+                            <li>Storage Class: {{ file['StorageClass'] }}</li>
+                            <li>ETag: {{ file['ETag'] }}</li>
+                        </ol>
+                </li>
+            </ul>
+        {% endfor %}
+        </div>
+
+        <div class="container">
+            <h3>Files in 'Name'</h3>
+                <ol>
+                    {% for file in s3_names %}
+                    <li>{{ file }}</li>
+                    {% endfor %}
+                </ol>
+        </div>
+
+        <hr />
+
+        <div class="container">
+            <h2>Test Endpoints</h2>
+            <ul>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_fund')" class="btn btn-primary">Add Fund</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/verify_receipts')" class="btn btn-primary">Verify Receipts</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/display_donors')" class="btn btn-primary">Display Donors</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/logout')" class="btn btn-danger">Logout</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/login')" class="btn btn-primary">Login</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/create_account')" class="btn btn-primary">Creating Account</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/events')" class="btn btn-primary">View Events</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event')" class="btn btn-primary">Add Event, backend</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event_page')" class="btn btn-primary">Add Event, frontend</button></li>
+            </ul>
+           
+        </div>
+    </div>
+
+    <script>
+        async function checkEndpoint(endpoint) {
+            if (endpoint === '/logout') {
+                alert('ESVIN, DO NOT CLICK -Esvin');
+                return;
+            }
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    alert(`Endpoint ${endpoint} contacted successfully!. Method used: POST`);
+                } else {
+                    const getResponse = await fetch(endpoint, {
+                        method: 'GET'
+                    });
+                    
+                    if (getResponse.ok) {
+                        alert(`Endpoint ${endpoint} contacted successfully. Method used: GET`);
+                    } else {
+                        const errorMessage = await getResponse.text();
+                        alert(`Endpoint ${endpoint} returned an error message after retry: ${errorMessage}`);
+                    }
+                }
+            } catch (error) {
+                console.error(`Endpoint ${endpoint} failed to contact!`, error);
+                alert(`Error contacting ${endpoint}`);
+            }
+        }
+
+        function updateCurrentTime() {
+            var currentTimeElement = document.getElementById('current-time');
+            var currentTime = new Date().toLocaleTimeString();
+            currentTimeElement.innerText = 'The time is: ' + currentTime;
+        }
+
+        setInterval(updateCurrentTime, 1000);
+
+        updateCurrentTime();
+    </script>
+    {% else %}
+    <div class="container">
+        <h1>Access Denied</h1>
+        <p>You are not Developer! Go Away!</p>
+    </div>
+    {% endif %}
+    <hr />
+    <div class="footer">
+       <p>Designed, Built by Bachu Esvin Joshua</p>
+       <p>Website hosted on Render</p>
+    </div>
+</body>
+</html>

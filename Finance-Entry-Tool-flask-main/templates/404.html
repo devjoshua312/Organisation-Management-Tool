@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/static/styles.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" />
+   <title>Page not found.</title>
+   <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+   <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+      body {
+         font-family: 'Montserrat', sans-serif;
+      }
+    </style>
+</head>
+
+<body style="background-color: #5a6268;">
+   <div class="container">
+      <div class="row">
+         <div class="col-12">
+            <h1>Page not found.</h1>
+            <p>The page you were trying to view does not exist.</p>
+            <a href="{{ url_for('error_info') }}">learn more</a>
+            <hr />
+            <a href="{{ url_for('home') }}" class="btn btn-warn">Click here to go back to the home page.</a>
+         </div>
+      </div>
+      <hr />
+      <div class="footer">
+         <p>Designed, Built by Bachu Esvin Joshua</p>
+         <p>Website hosted on Render</p>
+      </div>
+   </div>
+</body>
+</html>

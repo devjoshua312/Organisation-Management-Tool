@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verify Receipts</title>
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+        body {
+           font-family: 'Montserrat', sans-serif;
+           background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('home') }}">Baptist Church Dilsukhnagar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                <a class="nav-link" href="{{ url_for('add_fund_page') }}">Add Fund</a>
+                <a class="nav-link" href="{{ url_for('display_donors') }}">Display Donors</a>
+                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="mb-4">Verify Receipts</h1>
+    <form id="verifyForm">
+        <div class="mb-3">
+            <label for="verifyName" class="form-label">Name (as in receipt):</label>
+            <input type="text" class="form-control" id="verifyName" name="verifyName" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="transactionId" class="form-label">Transaction ID:</label>
+            <input type="text" class="form-control" id="transactionId" name="transactionId" required />
+        </div>
+
+        <button type="button" class="btn btn-success" onclick="verifyReceipt()">Verify Receipt</button>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    function verifyReceipt() {
+        var name = document.getElementById('verifyName').value;
+        var transactionId = document.getElementById('transactionId').value;
+
+        if (name === '' || transactionId === '') {
+            alert('Please fill in all fields!');
+            return;
+        }
+
+        fetch('/verify_receipt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: name, transactionId: transactionId }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'match') {
+                alert('Receipt Verified: Match!');
+            } else if (data.result === 'no_match') {
+                alert('Receipt Verification Failed: No Match!');
+            } else {
+                alert('Receipt Verification Failed: ' + data.result);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Receipt Verification Failed: ' + error);
+        });
+    }
+</script>
+<hr />
+<div class="footer">
+   <p>Designed, Built by Bachu Esvin Joshua</p>
+   <p>Website hosted on Render</p>
+</div>
+
+</body>
+</html>
