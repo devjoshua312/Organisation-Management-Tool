@@ -9,11 +9,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" />
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Honk&display=swap');
     body {
        font-family: 'Montserrat', sans-serif;
        background-color: #5a6268;
     }
+            #per-inf {
+         font-family: 'Honk', system-ui;
+      }
   </style>
   <script>
     function enableSubmitButton() {
@@ -89,7 +92,7 @@
   {% endif %}
   
   <hr />
-  <div class="footer">
+  <div class="footer" id="per-inf">
      <p>Designed, Built by Bachu Esvin Joshua</p>
      <p>Website hosted on Render</p>
   </div>

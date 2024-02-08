@@ -14,11 +14,14 @@
       }
     </style>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Honk&display=swap');
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: #5a6268;
         }
+        #per-inf {
+         font-family: 'Honk', system-ui;
+      }
     </style>
 </head>
 
@@ -45,9 +48,9 @@
         </div>
       </nav>
 
-    {% if username == 'dev' %}
-    <div class="container">
-        <h1>Dev Page</h1>
+    {% if username == 'developer' %}
+    <div class="container-no-hover">
+        <h1 style="padding: 5px;">Dev Page</h1>
         <hr />
         <div class="container">
             <h2>Hi ESVIN!</h2>
@@ -194,7 +197,7 @@
     </div>
     {% endif %}
     <hr />
-    <div class="footer">
+    <div class="footer" id="per-inf">
        <p>Designed, Built by Bachu Esvin Joshua</p>
        <p>Website hosted on Render</p>
     </div>

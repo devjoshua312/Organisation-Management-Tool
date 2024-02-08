@@ -109,7 +109,7 @@ def display_donors():
         fund_data = []
 
         for fund in funds:
-            if current_user.id == 'dev':
+            if current_user.id == 'developer':
                 fund_data.append(fund)
             else:
                 if fund['Name'] == current_user.id:
@@ -143,7 +143,8 @@ def login():
             if user_data and password == user_data['password']:
                 user = User(username)
                 login_user(user)
-                return redirect(url_for('home'))
+                if current_user.id == 'developer':
+                    return redirect(url_for('home'))
 
             return 'Invalid username or password'
 
@@ -163,12 +164,15 @@ def add_fund():
         amount_words = num2words(
             float(request.form['amount_number']), lang='en_IN')
         amount_number = request.form['amount_number']
-        address = request.form['address']
+        address = request.form['address'] 
 
         try:
             if 'receipt' in request.files:
+
+                receipt_extension = request.files['receipt'].filename.split('.')[-1]
+
                 receipt = request.files['receipt']
-                file_key = f'{name}/{receipt.filename}'
+                file_key = f'{name}/{name}.{receipt_extension}'
                 s3.upload_fileobj(receipt, BUCKET_NAME, file_key)
             else:
                 pass
@@ -241,51 +245,59 @@ def update_info():
 
 @app.route('/register', methods=['POST'])
 def register():
-    forbidden_names = []
+    if request.method == 'POST':
+        try:
+            forbidden_names = []
 
-    f = open("bad_usernames.json")
-    data = json.load(f)
+            f = open("bad_usernames.json")
+            data = json.load(f)
 
-    for line in data["usernames"]:
-        print("line: ", line)
-        forbidden_names.append(line)
+            for line in data["usernames"]:
+                print("line: ", line)
+                forbidden_names.append(line)
 
-    try:
-        username = request.form['username']
-        password = request.form['password']
-        phone_number = request.form['phone']
+            try:
+                name = request.form['name']
+                username = request.form['username']
+                password = request.form['password']
+                phone_number = request.form['phone']
 
-        if username in forbidden_names:
-            print(forbidden_names)
-            print('Username is not allowed!')
-            return 'Username is not allowed!'
+                if username in forbidden_names:
+                    print('Username is not allowed!')
+                    return 'Username is not allowed!'
 
-        existing_user = user_collection.find_one({'username': username})
+                existing_user = user_collection.find_one({'username': username})
 
-        if existing_user:
-            return 'Username already exists!'
+                if existing_user:
+                    return 'Username already exists!'
 
-        new_user = {
-            'username': username,
-            'password': password,
-            'phone': phone_number
-        }
+                new_user = {
+                    'name': name,
+                    'username': username,
+                    'password': password,
+                    'phone': phone_number
+                }
 
-        user_collection.insert_one(new_user)
+                user_collection.insert_one(new_user)
 
-        user = User(username)
-        login_user(user)
+                user = User(username)
+                login_user(user)
 
-        return redirect(url_for('update_user'))
-    except Exception as e:
-        logging.error(e)
-        return "The System Encountered An Error. Please Try Again Later."
+                return redirect(url_for('update_user'))
+            except Exception as e:
+                logging.error(e)
+                return "The System Encountered An Error. Please Try Again Later."
+        except Exception as e:
+            logging.error(e)
+            return "The System Encountered An Error. Please Try Again Later."
+    else:
+        return "Invalid request method"
 
 
 @app.route('/remove_donors', methods=['POST'])
 @login_required
 def remove_donors():
-    if current_user.id != 'dev':
+    if current_user.id != 'developer':
         return send_file('receipts/511', as_attachment=True)
     else:
         donor_name = request.form['donor_name']
@@ -303,7 +315,7 @@ def download_receipt(donor_name):
         file_key = f'{donor_name}.jpeg' if extension == 'jpeg' else f'{donor_name}.{extension}'
         file_url = f'https://{BUCKET_NAME}.s3.amazonaws.com/{file_key}'
         
-        if current_user.id != 'dev':
+        if current_user.id != 'developer' or current_user.id != 'admin':
             return send_file('receipts/511.txt', as_attachment=True, attachment_filename='info.txt')
         else:
             receipts = os.listdir('receipts/')
@@ -336,67 +348,69 @@ def verify_receipt():
 @app.route('/add_event_page')
 @login_required
 def add_event_page():
-    if current_user.id == 'dev' or current_user.id == 'admin':
-        user = 'allowed'
+    if current_user.id == 'developer' or current_user.id == 'admin':
+        return render_template('add_event_page.html')
     else:
-        user = current_user.id
-    return render_template('add_event_page.html', user=user)
+        return "You are not allowed to view this page."
 
 @app.route('/add_event', methods=['POST'])
 @login_required
 def add_event():
-    try:
-        if current_user.id == 'dev' or current_user.id == 'admin':
-            user = 'allowed'
-        else:
-            user = current_user.id
-            
-        event_name = request.form['event_name']
-        event_date = request.form['event_date']
-        event_description = request.form['event_description']
+    if current_user.id == 'developer' or current_user.id == 'admin':
+        user = 'allowed'
+        try:
+                
+            event_name = request.form['event_name']
+            event_date = request.form['event_date']
+            event_description = request.form['event_description']
 
-        new_event = {
-            'event_name': event_name,
-            'event_date': event_date,
-            'event_description': event_description
-        }
+            new_event = {
+                'event_name': event_name,
+                'event_date': event_date,
+                'event_description': event_description
+            }
 
-        event_collection.insert_one(new_event)
+            event_collection.insert_one(new_event)
 
-        return render_template('add_event_page.html', user=user)
-    except Exception as e:
-        logging.error(e)
-        return "The System Encountered An Error. Please Try Again Later."
+            return render_template('add_event_page.html', user=user)
+        except Exception as e:
+            logging.error(e)
+            return "The System Encountered An Error. Please Try Again Later."
+    else:
+        return "You are not allowed to view this page."
 
 @app.route('/debug')
 def debug():
-    try:
-        username = current_user.id
-        os_info = platform.system()
-        release = platform.release()
-        version = platform.version()
-        time = datetime.datetime.now()
-        currenttime = time.strftime("%I:%M:%S %p")
+    if current_user.id == 'developer':
+        try:
+            username = current_user.id
+            os_info = platform.system()
+            release = platform.release()
+            version = platform.version()
+            time = datetime.datetime.now()
+            currenttime = time.strftime("%I:%M:%S %p")
 
 
-        return render_template('debug.html', username=username,
-                               grec_sitekey=grec_sitekey,
-                               current_dir=os.getcwd(),
-                               files=os.listdir(),
-                               os=os_info,
-                               release=release,
-                               version=version,
-                               currenttime=currenttime,
-                               bucket_name=BUCKET_NAME,
-                               s3_files=s3.list_objects(Bucket=BUCKET_NAME),
-                               s3_contents=s3.list_objects(Bucket=BUCKET_NAME)['Contents'],
-                               s3_names=[file['Key'] for file in s3.list_objects(Bucket=BUCKET_NAME)['Contents']],
-                               database=db_name,
-                               collections=db.list_collection_names(),
-                               num_docs=funds_collection.count_documents({}))
-    except Exception as e:
-        logging.error(e)
-        return "The System Encountered An Error. Please Try Again Later."
+            return render_template('debug.html', username=username,
+                                grec_sitekey=grec_sitekey,
+                                current_dir=os.getcwd(),
+                                files=os.listdir(),
+                                os=os_info,
+                                release=release,
+                                version=version,
+                                currenttime=currenttime,
+                                bucket_name=BUCKET_NAME,
+                                s3_files=s3.list_objects(Bucket=BUCKET_NAME),
+                                s3_contents=s3.list_objects(Bucket=BUCKET_NAME)['Contents'],
+                                s3_names=[file['Key'] for file in s3.list_objects(Bucket=BUCKET_NAME)['Contents']],
+                                database=db_name,
+                                collections=db.list_collection_names(),
+                                num_docs=funds_collection.count_documents({}))
+        except Exception as e:
+            logging.error(e)
+            return "The System Encountered An Error. Please Try Again Later."
+    else:
+        return "You are not allowed to view this page."
 
 
 

@@ -12,9 +12,12 @@
       crossorigin="anonymous" referrerpolicy="no-referrer" />
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Honk&display=swap');
       body {
          font-family: 'Montserrat', sans-serif;
+      }
+              #per-inf {
+         font-family: 'Honk', system-ui;
       }
     </style>
    <script>
@@ -80,13 +83,13 @@
         <tr>
           <th>Name</th>
           <th class="date">Date</th>
-          {% if username == 'dev' or username == fund['Name'] %}<th>Contact Number</th>{% else %}{% endif %}
-          {% if username == 'dev' %}<th>Amount (Number)</th>{% else %}{% endif %}
-          {% if username == 'dev' %}<th>Amount (Words)</th>{% else %}{% endif %}
-          {% if username == 'dev' %}<th>Address</th>{% else %}{% endif %}
-          {% if username == 'dev' %}<th>Type</th>{% else %}{% endif %}
-          {% if username == 'dev' %}<th>Receipt</th>{% else %}{% endif %}
-          {% if username == 'dev' %}<th>Action</th>{% else %}{% endif %}
+          {% if username == 'developer' or username == fund['Name'] %}<th>Contact Number</th>{% else %}{% endif %}
+          {% if username == 'developer' %}<th>Amount (Number)</th>{% else %}{% endif %}
+          {% if username == 'developer' %}<th>Amount (Words)</th>{% else %}{% endif %}
+          {% if username == 'developer' %}<th>Address</th>{% else %}{% endif %}
+          {% if username == 'developer' %}<th>Type</th>{% else %}{% endif %}
+          {% if username == 'developer' %}<th>Receipt</th>{% else %}{% endif %}
+          {% if username == 'developer' %}<th>Action</th>{% else %}{% endif %}
         </tr>
       </thead>
       <tbody>
@@ -94,12 +97,12 @@
         <tr>
           <td>{{ fund['Name'] }}</td>
           <td class="date">{{ fund['Date'] }}</td>
-          {% if username == 'dev' or username == fund['Name'] %}<td>{{ fund['ContactNumber'] }}</td>{% else %} {% endif %}
-          {% if username == 'dev' %}<td>{{ fund['AmountNumber'] }}</td>{% else %} {% endif %}
-          {% if username == 'dev' %}<td>{{ fund['AmountWords'] }}</td>{% else %} {% endif %}
-          {% if username == 'dev' %}<td>{{ fund['Address'] }}</td>{% else %} {% endif %}
-          {% if username == 'dev' %}<td>{{ fund['type'] }}</td>{% else %} {% endif %}
-          {% if username == 'dev' %}<td>
+          {% if username == 'developer' or username == fund['Name'] %}<td>{{ fund['ContactNumber'] }}</td>{% else %} {% endif %}
+          {% if username == 'developer' %}<td>{{ fund['AmountNumber'] }}</td>{% else %} {% endif %}
+          {% if username == 'developer' %}<td>{{ fund['AmountWords'] }}</td>{% else %} {% endif %}
+          {% if username == 'developer' %}<td>{{ fund['Address'] }}</td>{% else %} {% endif %}
+          {% if username == 'developer' %}<td>{{ fund['type'] }}</td>{% else %} {% endif %}
+          {% if username == 'developer' %}<td>
             <!-- <a href="{{ url_for('download_receipt', donor_name=fund['Name']) }}" class="btn btn-primary">Download Receipt</a> -->
             <p>
                Cannot fetch reciepts at this moment. Please try later. 
@@ -108,7 +111,7 @@
             {% else %}
             {% endif %}
           </td>
-          {% if username == 'dev' %}
+          {% if username == 'developer' %}
           <td>
             <form class="remove-donor-form" action="/remove_donors" method="POST">
               <input type="hidden" class="donor-name" name="donor_name" value="{{ fund['Name'] }}" />
@@ -132,7 +135,7 @@
   </div>
   {% endif %}
   <hr />
-  <div class="footer">
+  <div class="footer" id="per-inf">
      <p>Designed, Built by Bachu Esvin Joshua</p>
      <p>Website hosted on Render</p>
   </div>

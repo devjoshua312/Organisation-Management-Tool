@@ -27,12 +27,17 @@ background-color: #fff;
 
 .container {
 background-color: #373434;
-margin-top: 10px;
+margin: 10px;
 padding: 20px;
 border-radius: 8px;
 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 cursor: pointer;
 transition: transform 0.2s ease-in-out;
+}
+
+.container-no-hover {
+background-color: #373434;
+border-radius: 5px;
 }
 
 .container:hover {

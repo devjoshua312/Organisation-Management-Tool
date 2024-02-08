@@ -8,9 +8,12 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" />
    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
    <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Honk&display=swap');
       body {
          font-family: 'Montserrat', sans-serif;
+      }
+              #per-inf {
+         font-family: 'Honk', system-ui;
       }
     </style>
 </head>
@@ -41,8 +44,7 @@
 
    <div class="container">
       {% if current_user.is_authenticated %}
-      {% if user == 'allowed' %}
-        <h1 class="mb-4">Fund Entry</h1>
+        <h1 class="mb-4">Event Entry</h1>
         <form action="{{ url_for('add_event') }}" method="POST" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6">
@@ -67,15 +69,12 @@
       <button type="submit" class="btn btn-primary">Add Event</button>
       </form>
       {% else %}
-        <h1 class="mb-4">You are not authorized to access this page.</h1>
-        {% endif %}
-      {% else %}
       <h1 class="mb-4">You are not logged in.</h1>
       <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
       {% endif %}
    </div>
    <hr />
-   <div class="footer">
+   <div class="footer" id="per-inf">
       <p>Designed, Built by Bachu Esvin Joshua</p>
       <p>Website hosted on Render</p>
    </div>
