@@ -124,7 +124,3 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 
 > If you like this project, show some support by [buying me a coffee](https://www.buymeacoffee.com/joshuaesvin)
 
-<hr>
-
-> ### Note
-   > I've begun to use this as a personal project to host a small scale website, so there might be some changes you will need to do such as changing the website `<title>` tags and such; However, rest of the code will remain unchanged, and fully functional.
