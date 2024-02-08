@@ -122,6 +122,8 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 - `/register`: The backend of the create account page
 - `/debug`: A brief debug page with the essential tools for debugging like current dir, buttons to test endpoints and such.
 
+> If you like this project, show some support by [buying me a coffee](https://www.buymeacoffee.com/joshuaesvin)
+
 <hr>
 
 > ### Note
