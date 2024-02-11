@@ -52,7 +52,6 @@ def load_user(user_id):
     return User(user_id)
 
 
-
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -64,6 +63,8 @@ def add_fund_page():
     return render_template('add_fund_page.html')
 
 # I only added a 404 page, you can add more error pages if you want
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html')
@@ -86,12 +87,12 @@ def update_user():
     # The page doesn't actually need this, but for some reason it doesn't work without it
     return render_template('update_user_info.html', user_data=user_data)
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('home'))
-
 
 
 @app.route('/verify_receipts')
@@ -114,7 +115,7 @@ def display_donors():
             else:
                 if fund['Name'] == current_user.id:
                     fund_data.append(fund)
-        
+
         highest_donor = ""
         highest_amount = 0
 
@@ -164,20 +165,30 @@ def add_fund():
         amount_words = num2words(
             float(request.form['amount_number']), lang='en_IN')
         amount_number = request.form['amount_number']
-        address = request.form['address'] 
+        address = request.form['address']
 
         try:
-            if 'receipt' in request.files:
+            if request.files:
 
-                receipt_extension = request.files['receipt'].filename.split('.')[-1]
+                receipt_extension = request.files['receipt'].filename.split(
+                    '.')[-1]
 
                 receipt = request.files['receipt']
-                file_key = f'{name}/{name}.{receipt_extension}'
-                s3.upload_fileobj(receipt, BUCKET_NAME, file_key)
+                if receipt:
+                    if receipt_extension not in ['jpeg', 'jpg', 'png']:
+                        return 'Invalid file type. Please upload a jpeg, jpg, or png file.'
+                    file_key = f'{name}/{name}.{receipt_extension}'
+                    s3.upload_fileobj(receipt, BUCKET_NAME, file_key)
+
+                    file_url = f'https://{BUCKET_NAME}.s3.amazonaws.com/{file_key}'
+
+                else:
+                    files = False
             else:
                 pass
-        except:
-            pass
+        except Exception as e:
+            logging.error(e)
+            return "The System Encountered An Error. Please Try Again Later."
 
         if not name or not date or not contact_number or not amount_words or not amount_number:
             return jsonify({'error': 'Please enter all fund details.'})
@@ -201,7 +212,7 @@ def add_fund():
                 "AmountNumber": amount_number,
                 "Address": address,
                 "type": 'completed transaction',
-                "cloud_storage_url": f'https://{BUCKET_NAME}.s3.amazonaws.com/{file_key}'
+                "cloud_storage_url": f'{file_url}' if files else "None"
             }
 
             funds_collection.insert_one(new_fund)
@@ -216,6 +227,7 @@ def add_fund():
 def events():
     return render_template('events.html', events=event_collection.find())
 
+
 @app.route('/update_info', methods=['POST'])
 def update_info():
     if request.method == 'POST':
@@ -226,7 +238,6 @@ def update_info():
             # TODO: membership_number = random.randint(100000000, 999999999)
             # TODO: user_data['membership_number'] = membership_number
 
-            
             user_data['mem_type'] = request.form['mem_type']
             user_data['membership_duration'] = request.form['membership_duration']
             user_data['marital_status'] = request.form['marital_status']
@@ -266,7 +277,8 @@ def register():
                     print('Username is not allowed!')
                     return 'Username is not allowed!'
 
-                existing_user = user_collection.find_one({'username': username})
+                existing_user = user_collection.find_one(
+                    {'username': username})
 
                 if existing_user:
                     return 'Username already exists!'
@@ -302,7 +314,21 @@ def remove_donors():
     else:
         donor_name = request.form['donor_name']
 
-        funds_collection.delete_one({'Name': donor_name})
+        users = user_collection.find()
+        funds = funds_collection.find()
+
+        for user in users:
+            if user['username'] == donor_name:
+                user_collection.delete_one({'username': donor_name})
+
+        for fund in funds:
+            if fund['Name'] == donor_name:
+                if fund['cloud_storage_url'] != 'None':
+                    file_key = fund['cloud_storage_url'].split('/')[-1]
+                    s3.delete_object(Bucket=BUCKET_NAME, Key=file_key)
+
+                funds_collection.delete_one({'Name': donor_name})
+
 
     return render_template('display_donors.html')
 
@@ -314,7 +340,7 @@ def download_receipt(donor_name):
         extension = donor_name.split(".")[-1]
         file_key = f'{donor_name}.jpeg' if extension == 'jpeg' else f'{donor_name}.{extension}'
         file_url = f'https://{BUCKET_NAME}.s3.amazonaws.com/{file_key}'
-        
+
         if current_user.id != 'developer' or current_user.id != 'admin':
             return send_file('receipts/511.txt', as_attachment=True, attachment_filename='info.txt')
         else:
@@ -325,7 +351,6 @@ def download_receipt(donor_name):
     except Exception as e:
         logging.error(e)
         return "The System Encountered An Error. Please Try Again Later."
-
 
 
 @app.route('/verify_receipt', methods=['POST'])
@@ -344,7 +369,7 @@ def verify_receipt():
 
 
 ###### HIGH LEVEL ENDPOINTS ######
-    
+
 @app.route('/add_event_page')
 @login_required
 def add_event_page():
@@ -353,13 +378,14 @@ def add_event_page():
     else:
         return "You are not allowed to view this page."
 
+
 @app.route('/add_event', methods=['POST'])
 @login_required
 def add_event():
     if current_user.id == 'developer' or current_user.id == 'admin':
         user = 'allowed'
         try:
-                
+
             event_name = request.form['event_name']
             event_date = request.form['event_date']
             event_description = request.form['event_description']
@@ -379,6 +405,7 @@ def add_event():
     else:
         return "You are not allowed to view this page."
 
+
 @app.route('/debug')
 def debug():
     if current_user.id == 'developer':
@@ -390,28 +417,25 @@ def debug():
             time = datetime.datetime.now()
             currenttime = time.strftime("%I:%M:%S %p")
 
-
             return render_template('debug.html', username=username,
-                                grec_sitekey=grec_sitekey,
-                                current_dir=os.getcwd(),
-                                files=os.listdir(),
-                                os=os_info,
-                                release=release,
-                                version=version,
-                                currenttime=currenttime,
-                                bucket_name=BUCKET_NAME,
-                                s3_files=s3.list_objects(Bucket=BUCKET_NAME),
-                                s3_contents=s3.list_objects(Bucket=BUCKET_NAME)['Contents'],
-                                s3_names=[file['Key'] for file in s3.list_objects(Bucket=BUCKET_NAME)['Contents']],
-                                database=db_name,
-                                collections=db.list_collection_names(),
-                                num_docs=funds_collection.count_documents({}))
+                                   grec_sitekey=grec_sitekey,
+                                   current_dir=os.getcwd(),
+                                   files=os.listdir(),
+                                   os=os_info,
+                                   release=release,
+                                   version=version,
+                                   currenttime=currenttime,
+                                   bucket_name=BUCKET_NAME,
+                                   s3_files=s3.list_objects(Bucket=BUCKET_NAME),
+                                   s3_contents=s3.list_objects(Bucket=BUCKET_NAME)['Contents'] if 'Contents' in s3.list_objects(Bucket=BUCKET_NAME) else None,
+                                   s3_names=[file['Key'] for file in s3.list_objects(Bucket=BUCKET_NAME)['Contents']] if 'Contents' in s3.list_objects(Bucket=BUCKET_NAME) else None,
+                                   db_name=os.getenv('MONGO_DB_NAME'),
+                                   collections=db.list_collection_names())
         except Exception as e:
             logging.error(e)
             return "The System Encountered An Error. Please Try Again Later."
     else:
         return "You are not allowed to view this page."
-
 
 
 if __name__ == '__main__':

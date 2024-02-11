@@ -9,19 +9,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" />
     <link rel="icon" href="static/favicon.ico" type="image/x-icon">
     <style>
-      hr {
-         border: 1px solid white;
-      }
+        hr {
+            border: 1px solid white;
+        }
     </style>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Nova+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Nova+Mono&display=swap');
+
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: #5a6268;
         }
+
         #per-inf {
-         font-family: 'Nova Mono', sans-serif;
-      }
+            font-family: 'Nova Mono', sans-serif;
+        }
     </style>
 </head>
 
@@ -30,23 +32,23 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('home') }}">Church App</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"> <span
-              class="navbar-toggler-icon"></span> </button>
-          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                {% if current_user.is_authenticated %}
-                <a class="nav-link" href="{{ url_for('add_fund_page') }}">Add Fund</a>
-                <a class="nav-link" href="{{ url_for('display_donors') }}">Display Donors</a>
-                <a class="nav-link" href="{{ url_for('verify_receipts') }}">Verify Receipts</a>
-                <a class="nav-link" href="{{ url_for('events') }}">View Events</a>
-                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                {% else %}
-                <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                {% endif %}
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"> <span
+                    class="navbar-toggler-icon"></span> </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <a class="nav-link" href="{{ url_for('add_fund_page') }}">Add Fund</a>
+                    <a class="nav-link" href="{{ url_for('display_donors') }}">Display Donors</a>
+                    <a class="nav-link" href="{{ url_for('verify_receipts') }}">Verify Receipts</a>
+                    <a class="nav-link" href="{{ url_for('events') }}">View Events</a>
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    {% else %}
+                    <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    {% endif %}
+                </div>
             </div>
-          </div>
         </div>
-      </nav>
+    </nav>
 
     {% if username == 'developer' %}
     <div class="container-no-hover">
@@ -78,7 +80,7 @@
         </div>
 
         <hr />
-        
+
         <div class="container">
             <h2>MongoDB Info</h2>
             <p>Database: {{ db_name }}</p>
@@ -88,7 +90,6 @@
                 <li>{{ collection }}</li>
                 {% endfor %}
             </ol>
-            <p>Number of documents: {{ num_docs }}</p>
         </div>
 
         <hr />
@@ -96,55 +97,69 @@
             <h2>AWS Info</h2>
             <p>Bucket: {{ bucket_name }}</p>
             <p>Objects in bucket</p>
-                <ol>
-                    {% for file in s3_files %}
-                    <li>{{ file }}</li>
-                    {% endfor %}
-                </ol>
+            <ol>
+                {% for file in s3_files %}
+                <li>{{ file }}</li>
+                {% endfor %}
+            </ol>
         </div>
 
+        {% if s3_names %}
         <div class="container">
-            <h3>Details of files in 'Contents'</h3>
+            <h3>Files in 'Name'</h3>
+            <ol>
+                {% for file in s3_names %}
+                <li>{{ file }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+        {% endif %}
+
+        {% if s3_contents %}
+        <div class="container">
+            <h3>Details of files</h3>
             {% for file in s3_contents %}
             <ol>
                 <li>
                     <p>{{ file['Key'] }}</p>
-                        <ul>
-                            <li>Size: {{ file['Size']/1024/1024 }} MB or {{ file['Size'] }} B </li>
-                            <li>Last Modified: {{ file['LastModified'] }}</li>
-                            <li>Storage Class: {{ file['StorageClass'] }}</li>
-                            <li>ETag: {{ file['ETag'] }}</li>
-                        </ul>
+                    <ul>
+                        <li>Size: {{ file['Size']/1024/1024 }} MB or {{ file['Size'] }} B </li>
+                        <li>Last Modified: {{ file['LastModified'] }}</li>
+                        <li>Storage Class: {{ file['StorageClass'] }}</li>
+                        <li>ETag: {{ file['ETag'] }}</li>
+                    </ul>
                 </li>
             </ol>
-        {% endfor %}
+            {% endfor %}
         </div>
+        {% endif %}
 
-        <div class="container">
-            <h3>Files in 'Name'</h3>
-                <ol>
-                    {% for file in s3_names %}
-                    <li>{{ file }}</li>
-                    {% endfor %}
-                </ol>
-        </div>
 
         <hr />
 
         <div class="container">
             <h2>Test Endpoints</h2>
             <ul>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_fund')" class="btn btn-primary">Add Fund</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/verify_receipts')" class="btn btn-primary">Verify Receipts</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/display_donors')" class="btn btn-primary">Display Donors</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/logout')" class="btn btn-danger">Logout</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/login')" class="btn btn-primary">Login</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/create_account')" class="btn btn-primary">Creating Account</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/events')" class="btn btn-primary">View Events</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event')" class="btn btn-primary">Add Event, backend</button></li>
-                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event_page')" class="btn btn-primary">Add Event, frontend</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_fund')" class="btn btn-primary">Add
+                        Fund</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/verify_receipts')"
+                        class="btn btn-primary">Verify Receipts</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/display_donors')"
+                        class="btn btn-primary">Display Donors</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/logout')"
+                        class="btn btn-danger">Logout</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/login')"
+                        class="btn btn-primary">Login</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/create_account')"
+                        class="btn btn-primary">Creating Account</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/events')" class="btn btn-primary">View
+                        Events</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event')"
+                        class="btn btn-primary">Add Event, backend</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event_page')"
+                        class="btn btn-primary">Add Event, frontend</button></li>
             </ul>
-           
+
         </div>
     </div>
 
@@ -166,7 +181,7 @@
                     const getResponse = await fetch(endpoint, {
                         method: 'GET'
                     });
-                    
+
                     if (getResponse.ok) {
                         alert(`Endpoint ${endpoint} contacted successfully. Method used: GET`);
                     } else {
@@ -198,8 +213,9 @@
     {% endif %}
     <hr />
     <div class="footer" id="per-inf">
-       <p>Designed, Built by Bachu Esvin Joshua</p>
-       <p>Website hosted on Render</p>
+        <p>Designed, Built by Bachu Esvin Joshua</p>
+        <p>Website hosted on Render</p>
     </div>
 </body>
+
 </html>
