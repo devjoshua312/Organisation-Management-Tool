@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <title>Display Donors</title>
    <meta charset="UTF-8">
@@ -11,15 +12,19 @@
       integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
       crossorigin="anonymous" referrerpolicy="no-referrer" />
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+
    <style>
       @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Nova+Mono&display=swap');
+
       body {
          font-family: 'Montserrat', sans-serif;
       }
-              #per-inf {
+
+      #per-inf {
          font-family: 'Nova Mono', sans-serif;
       }
-    </style>
+   </style>
    <script>
       $(document).ready(function () {
          $(".remove-donor-form").on("submit", function (e) {
@@ -59,86 +64,84 @@
          </button>
          <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-               {% if current_user.is_authenticated %}
                <a class="nav-link" href="{{ url_for('add_fund_page') }}">Add Fund</a>
                <a class="nav-link" href="{{ url_for('verify_receipts') }}">Verify Receipts</a>
+               <a class="nav-link" href="{{ url_for('events') }}">View Events</a>
                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-               {% else %}
-               <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-               {% endif %}
             </div>
          </div>
       </div>
    </nav>
 
-  {% if current_user.is_authenticated %}
-  <div class="container">
-    <h1>
-      {% if highest_donor != "" %} Highest Donor: {{ highest_donor }} {% else %} Highest Donor: N/A {% endif %}
-    </h1>
-    <h4>Current user: {{ username }}</h4>
-    {% if funds %}
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th class="date">Date</th>
-          {% if username == 'developer' or username == fund['Name'] %}<th>Contact Number</th>{% else %}{% endif %}
-          {% if username == 'developer' %}<th>Amount (Number)</th>{% else %}{% endif %}
-          {% if username == 'developer' %}<th>Amount (Words)</th>{% else %}{% endif %}
-          {% if username == 'developer' %}<th>Address</th>{% else %}{% endif %}
-          {% if username == 'developer' %}<th>Type</th>{% else %}{% endif %}
-          {% if username == 'developer' %}<th>Receipt</th>{% else %}{% endif %}
-          {% if username == 'developer' %}<th>Action</th>{% else %}{% endif %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for fund in funds %}
-        <tr>
-          <td>{{ fund['Name'] }}</td>
-          <td class="date">{{ fund['Date'] }}</td>
-          {% if username == 'developer' or username == fund['Name'] %}<td>{{ fund['ContactNumber'] }}</td>{% else %} {% endif %}
-          {% if username == 'developer' %}<td>{{ fund['AmountNumber'] }}</td>{% else %} {% endif %}
-          {% if username == 'developer' %}<td>{{ fund['AmountWords'] }}</td>{% else %} {% endif %}
-          {% if username == 'developer' %}<td>{{ fund['Address'] }}</td>{% else %} {% endif %}
-          {% if username == 'developer' %}<td>{{ fund['type'] }}</td>{% else %} {% endif %}
-          {% if username == 'developer' %}<td>
-            <!-- <a href="{{ url_for('download_receipt', donor_name=fund['Name']) }}" class="btn btn-primary">Download Receipt</a> -->
-            <p>
-               Cannot fetch reciepts at this moment. Please try later. 
-               <a href="{{ url_for('error_info') }}">learn more</a>
-            </p>
-            {% else %}
-            {% endif %}
-          </td>
-          {% if username == 'developer' %}
-          <td>
-            <form class="remove-donor-form" action="/remove_donors" method="POST">
-              <input type="hidden" class="donor-name" name="donor_name" value="{{ fund['Name'] }}" />
-              <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
-            </form>
-          </td>
-          {% else %}
-          {% endif %}
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-    <p>No donors found.</p>
-    {% endif %}
-  </div>
-  {% else %}
-  <div class="container">
-    <h3 class="mb-4">You are not logged in!</h3>
-    <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
-  </div>
-  {% endif %}
-  <hr />
-  <div class="footer" id="per-inf">
-     <p>Designed, Built by Bachu Esvin Joshua</p>
-     <p>Website hosted on Render</p>
-  </div>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+   {% if current_user.is_authenticated %}
+   <div class="container">
+      <h1>
+         {% if highest_donor != "" %} Highest Donor: {{ highest_donor }} {% else %} Highest Donor: N/A {% endif %}
+      </h1>
+      <h4>Current user: {{ username }}</h4>
+      {% if funds %}
+      <table class="table table-bordered">
+         <thead>
+            <tr>
+               <th>Name</th>
+               <th class="date">Date</th>
+               {% if username == 'developer' or username == fund['Name'] %}<th>Contact Number</th>{% else %}{% endif %}
+               {% if username == 'developer' %}<th>Amount (Number)</th>{% else %}{% endif %}
+               {% if username == 'developer' %}<th>Amount (Words)</th>{% else %}{% endif %}
+               {% if username == 'developer' %}<th>Address</th>{% else %}{% endif %}
+               {% if username == 'developer' %}<th>Type</th>{% else %}{% endif %}
+               {% if username == 'developer' %}<th>Receipt</th>{% else %}{% endif %}
+               {% if username == 'developer' %}<th>Action</th>{% else %}{% endif %}
+            </tr>
+         </thead>
+         <tbody>
+            {% for fund in funds %}
+            <tr>
+               <td>{{ fund['Name'] }}</td>
+               <td class="date">{{ fund['Date'] }}</td>
+               {% if username == 'developer' or username == fund['Name'] %}<td>{{ fund['ContactNumber'] }}</td>{% else
+               %} {% endif %}
+               {% if username == 'developer' %}<td>{{ fund['AmountNumber'] }}</td>{% else %} {% endif %}
+               {% if username == 'developer' %}<td>{{ fund['AmountWords'] }}</td>{% else %} {% endif %}
+               {% if username == 'developer' %}<td>{{ fund['Address'] }}</td>{% else %} {% endif %}
+               {% if username == 'developer' %}<td>{{ fund['type'] }}</td>{% else %} {% endif %}
+               {% if username == 'developer' %}<td>
+                  <!-- <a href="{{ url_for('download_receipt', donor_name=fund['Name']) }}" class="btn btn-primary">Download Receipt</a> -->
+                  <p>
+                     Cannot fetch reciepts at this moment. Please try later.
+                     <a href="{{ url_for('error_info') }}">learn more</a>
+                  </p>
+                  {% else %}
+                  {% endif %}
+               </td>
+               {% if username == 'developer' %}
+               <td>
+                  <form class="remove-donor-form" action="/remove_donors" method="POST">
+                     <input type="hidden" class="donor-name" name="donor_name" value="{{ fund['Name'] }}" />
+                     <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+                  </form>
+               </td>
+               {% else %}
+               {% endif %}
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+      {% else %}
+      <p>No donors found.</p>
+      {% endif %}
+   </div>
+   {% else %}
+   <div class="container">
+      <h3 class="mb-4">You are not logged in!</h3>
+      <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+   </div>
+   {% endif %}
+   <hr />
+   <div class="footer" id="per-inf">
+      <p>Designed, Built by Bachu Esvin Joshua</p>
+      <p>Website hosted on Render</p>
+   </div>
 </body>
+
 </html>

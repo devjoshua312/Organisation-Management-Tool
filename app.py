@@ -223,6 +223,7 @@ def add_fund():
         return "The System Encountered An Error. Please Try Again Later."
 
 
+
 @app.route('/events')
 def events():
     return render_template('events.html', events=event_collection.find())
@@ -234,7 +235,6 @@ def update_info():
         try:
             user_data = user_collection.find_one({'username': current_user.id})
 
-            # Didn't get a chance to test this out, best leave it commented.
             # TODO: membership_number = random.randint(100000000, 999999999)
             # TODO: user_data['membership_number'] = membership_number
 
