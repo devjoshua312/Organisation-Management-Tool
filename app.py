@@ -170,20 +170,19 @@ def add_fund():
         try:
             if request.files:
 
-                receipt_extension = request.files['receipt'].filename.split(
-                    '.')[-1]
+                receipt_extension = request.files['receipt'].filename.split('.')[-1]
 
                 receipt = request.files['receipt']
                 if receipt:
-                    if receipt_extension not in ['jpeg', 'jpg', 'png']:
-                        return 'Invalid file type. Please upload a jpeg, jpg, or png file.'
-                    file_key = f'{name}/{name}.{receipt_extension}'
+                    if receipt_extension.lower() != 'jpeg':
+                        return 'Invalid file type. Please upload a jpeg file.'
+                    file_key = f'{name}/{name}.jpeg'
                     s3.upload_fileobj(receipt, BUCKET_NAME, file_key)
 
                     file_url = f'https://{BUCKET_NAME}.s3.amazonaws.com/{file_key}'
 
                 else:
-                    files = False
+                    pass
             else:
                 pass
         except Exception as e:
@@ -212,7 +211,7 @@ def add_fund():
                 "AmountNumber": amount_number,
                 "Address": address,
                 "type": 'completed transaction',
-                "cloud_storage_url": f'{file_url}' if files else "None"
+                "cloud_storage_url": f'{file_url}' if request.files else None
             }
 
             funds_collection.insert_one(new_fund)
@@ -324,11 +323,10 @@ def remove_donors():
         for fund in funds:
             if fund['Name'] == donor_name:
                 if fund['cloud_storage_url'] != 'None':
-                    file_key = fund['cloud_storage_url'].split('/')[-1]
+                    file_key = f'{donor_name}/{donor_name}.jpeg'
                     s3.delete_object(Bucket=BUCKET_NAME, Key=file_key)
 
                 funds_collection.delete_one({'Name': donor_name})
-
 
     return render_template('display_donors.html')
 
@@ -416,6 +414,7 @@ def debug():
             version = platform.version()
             time = datetime.datetime.now()
             currenttime = time.strftime("%I:%M:%S %p")
+            funds = funds_collection.find()
 
             return render_template('debug.html', username=username,
                                    grec_sitekey=grec_sitekey,
@@ -430,6 +429,7 @@ def debug():
                                    s3_contents=s3.list_objects(Bucket=BUCKET_NAME)['Contents'] if 'Contents' in s3.list_objects(Bucket=BUCKET_NAME) else None,
                                    s3_names=[file['Key'] for file in s3.list_objects(Bucket=BUCKET_NAME)['Contents']] if 'Contents' in s3.list_objects(Bucket=BUCKET_NAME) else None,
                                    db_name=os.getenv('MONGO_DB_NAME'),
+                                   names = [fund['Name'] for fund in funds],
                                    collections=db.list_collection_names())
         except Exception as e:
             logging.error(e)
