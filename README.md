@@ -15,13 +15,12 @@ A Flask app to simulate functionality for managing funds, generating receipts, d
 - Uses a reliable data storing/retrieval system
 - Cloud Storage for downloading reciepts.
 
-
 ## Installation
 
 1. Clone the repository:
 
    ```
-   git clone https://github.com/devjoshua312/Organisation-Management-Tool.git
+   git clone https://github.com/wakandawebweaver/Organisation-Management-Tool.git
    ```
 
 2. Change into the project directory:
@@ -29,8 +28,6 @@ A Flask app to simulate functionality for managing funds, generating receipts, d
    ```
    cd project-folder
    ```
-
-
 
 # Prerequisites
 
@@ -41,12 +38,10 @@ Before running the application, ensure you have all the required packages by run
 ```
 pip install -r requirements.txt
 ```
-  
 
 ## Environment Variables
 
 > Create a `.env` file in the project root and set the environment variables:
-
 
 ```
 grec_sitekey=your_recaptcha_key
@@ -57,20 +52,19 @@ AWS_ACCESS_KEY_ID=access-key-id-of-your-iam-user
 AWS_SECRET_ACCESS_KEY=secret-key-of-your-iam-user
 ```
 
-
 Setting up your program to interact with the MongoDB can be quite painful and confusing, but you only need to change two things in the file:
 
-1) The .env variables
-2) The DB name
+1. The .env variables
+2. The DB name
 
 As for interacting with the AWS CS, this process is a little extensive.
-1) Sign up for the AWS Console, and search for S3 in the search bar.
-   > Follow the instructions on screen to continue to create a Storage Bucket.
-2) Now, search for 'IAM' in the search bar
-   > Proceed to create a new user in your organization which can interact with these databases. 
-   > When setting permissions, make sure to select 'AmazonS3FullAccess' permission for your user.
-3) Finally, copy the relevant data, and update the .env file.
 
+1. Sign up for the AWS Console, and search for S3 in the search bar.
+   > Follow the instructions on screen to continue to create a Storage Bucket.
+2. Now, search for 'IAM' in the search bar
+   > Proceed to create a new user in your organization which can interact with these databases.
+   > When setting permissions, make sure to select 'AmazonS3FullAccess' permission for your user.
+3. Finally, copy the relevant data, and update the .env file.
 
 > For information on creating, accessing and viewing your mongo dbs, [Mongo Docs](https://www.mongodb.com/docs/atlas/)
 
@@ -85,6 +79,7 @@ As for interacting with the AWS CS, this process is a little extensive.
 Run the Flask application:
 
 There are two ways to do this. One is with the Python Flask service:
+
 ```
 python app.py
 ```
@@ -96,9 +91,11 @@ gunicorn app:app.py
 ```
 
 If you want to run gunicorn on a custom server:
+
 ```
 gunicorn -w 4 -b 0.0.0.0:8000 app:app
 ```
+
 ```
 -w 4: Specifies the number of worker processes. (typically between 2-4).
 -b 0.0.0.0:8000: Binds Gunicorn to all network interfaces.
@@ -106,7 +103,7 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 
 > for more info and help, visit [gunicorn home page](https://docs.gunicorn.org/en/latest/run.html)
 
->for info on running a node server check out [npm docs](https://docs.npmjs.com/cli/v7/commands/npm-start)
+> for info on running a node server check out [npm docs](https://docs.npmjs.com/cli/v7/commands/npm-start)
 
 ## Endpoints
 
@@ -123,4 +120,3 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 - `/debug`: A brief debug page with the essential tools for debugging like current dir, buttons to test endpoints and such.
 
 > If you like this project, show some support by [buying me a coffee](https://www.buymeacoffee.com/joshuaesvin)
-
