@@ -64,16 +64,17 @@
             </div>
          </div>
    </nav>
-   <div class="container">
+   <div class="container-no-hover">
       <h1 class="mb-4 centered-text-element">Home Page</h1>
       <p class="centered-text-element">Welcome to the Church Page!</p>
       <p class="centered-text-element">Please login before you can access the full site. </p>
       <p class="centered-text-element">If you do not have an account, please register.</p>
-      <a href="{{ url_for('register') }}" class="btn btn-primary centered-btn">Register</a>
+      <a href="{{ url_for('create_account') }}" class="btn btn-primary centered-btn">Register</a>
       <a href="{{ url_for('login') }}" class="btn btn-primary centered-btn">Login</a>
-   </div>
-   {% endif %}
-   <div class="container mt-4">
+      <!-- </div> -->
+      {% endif %}
+      <!-- <div class="container-no-hover mt-4"> -->
+      <hr />
 
       <h2 class="centered-text-element">About</h2>
       <p class="centered-text-element">Church info</p>
@@ -86,11 +87,9 @@
 
       <h2 class="centered-text-element">Donations & Offerings</h2>
       <p class="centered-text-element">Donations and offerings can be made in person at the church or online.</p>
-      <p class="centered-text-element">Click the button below to navigate to the page.</p>
       {% if current_user.is_authenticated %}
+      <p class="centered-text-element">Click the button below to navigate to the page.</p>
       <a href="{{ url_for('add_fund_page') }}" class="btn btn-primary centered-btn">Add Fund</a>
-      {% else %}
-      <a href="{{ url_for('login') }}" class="btn btn-primary centered-btn">Login</a>
       {% endif %}
 
       <hr />
@@ -142,22 +141,19 @@
       <h2 class="centered-text-element">Connect with us on Instagram</h2>
       <p class="centered-text-element">Follow our Instagram pages for the latest updates and events:</p>
 
-      <a href="https://www.instagram.com/bcd_youthfellowship/" class="btn btn-primary centered-btn"
-         style="margin-top: 5px;"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="/" class="btn btn-primary centered-btn" style="margin-top: 5px;"><i class="fab fa-instagram"></i>
+         Instagram</a>
 
 
       <h2 class="centered-text-element">Our YouTube Channel</h2>
       <p class="centered-text-element">Subscribe to our YouTube channel for all the sermons:</p>
 
-      <a href="https://www.youtube.com/@baptistchurchdilsukhnagar" class="btn btn-primary centered-btn"
-         style="margin-top: 5px;"><i class="fab fa-youtube"></i> YouTube</a>
+      <a href="/" class="btn btn-primary centered-btn" style="margin-top: 5px;"><i class="fab fa-youtube"></i>
+         YouTube</a>
 
-
-      <hr />
 
    </div>
 
-   <hr />
    <div class="footer" id="per-inf">
       <p>Designed, Built by Bachu Esvin Joshua</p>
       <p>Website hosted on Render</p>

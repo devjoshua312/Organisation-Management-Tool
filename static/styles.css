@@ -37,6 +37,7 @@ hr {
 }
 
 .container-no-hover {
+  padding: 20px;
   background-color: #373434;
   border-radius: 5px;
 }

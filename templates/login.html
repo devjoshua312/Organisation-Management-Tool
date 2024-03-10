@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,13 +11,15 @@
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Montserrat&family=Nova+Mono&display=swap');
+
     body {
-       font-family: 'Montserrat', sans-serif;
-       background-color: #5a6268;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #5a6268;
     }
-            #per-inf {
-         font-family: 'Nova Mono', sans-serif;
-      }
+
+    #per-inf {
+      font-family: 'Nova Mono', sans-serif;
+    }
   </style>
   <script>
     function enableSubmitButton() {
@@ -36,6 +39,7 @@
     }
   </script>
 </head>
+
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -70,7 +74,7 @@
   {% else %}
   <div class="container login-container">
     <h1 class="mb-4">Login</h1>
-    <form action="{{ url_for('login') }}" method="POST"> 
+    <form action="{{ url_for('login') }}" method="POST">
       <!--  onkeydown="if(event.keyCode === 13) { 
       alert( 
             'You have pressed Enter key, use submit button instead');  
@@ -90,12 +94,13 @@
     </form>
   </div>
   {% endif %}
-  
+
   <hr />
   <div class="footer" id="per-inf">
-     <p>Designed, Built by Bachu Esvin Joshua</p>
-     <p>Website hosted on Render</p>
+    <p>Designed, Built by Bachu Esvin Joshua</p>
+    <p>Website hosted on Render</p>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

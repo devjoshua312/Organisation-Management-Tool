@@ -1,3 +1,8 @@
+'''
+TODO: Add user group system (admin, developer, regular-user etc.
+TODO:
+'''
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from num2words import num2words
@@ -16,6 +21,8 @@ dotenv.load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY')
 grec_sitekey = os.getenv('GREC_SITEKEY')
+
+user_level = ''
 
 s3 = boto3.client(
     's3',
@@ -62,9 +69,8 @@ def home():
 def add_fund_page():
     return render_template('add_fund_page.html')
 
+
 # I only added a 404 page, you can add more error pages if you want
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html')
@@ -139,15 +145,20 @@ def login():
             username = request.form['username']
             password = request.form['password']
 
+            print(username, password)
+
             user_data = user_collection.find_one({'username': username})
 
-            if user_data and password == user_data['password']:
-                user = User(username)
-                login_user(user)
-                if current_user.id == 'developer':
-                    return redirect(url_for('home'))
+            if user_data:
+                if user_data['password'] == password:
+                    user = User(username)
+                    login_user(user)
 
-            return 'Invalid username or password'
+                    return redirect(url_for('home'))
+                else:
+                    return "Invalid password."
+            else:
+                return "Username not found or does not exist."
 
         return render_template('login.html', grec_sitekey=grec_sitekey)
     except Exception as e:
@@ -286,7 +297,8 @@ def register():
                     'name': name,
                     'username': username,
                     'password': password,
-                    'phone': phone_number
+                    'phone': phone_number,
+                    'user_group': 'normal user'
                 }
 
                 user_collection.insert_one(new_user)
@@ -308,8 +320,10 @@ def register():
 @app.route('/remove_donors', methods=['POST'])
 @login_required
 def remove_donors():
-    if current_user.id != 'developer':
+    if user_level != 'developer':
         return send_file('receipts/511', as_attachment=True)
+    elif user_level == '':
+        return "You are not allowed to view this page."
     else:
         donor_name = request.form['donor_name']
 
@@ -380,10 +394,8 @@ def add_event_page():
 @app.route('/add_event', methods=['POST'])
 @login_required
 def add_event():
-    if current_user.id == 'developer' or current_user.id == 'admin':
-        user = 'allowed'
+    if user_level == 'developer' or user_level == 'admin':
         try:
-
             event_name = request.form['event_name']
             event_date = request.form['event_date']
             event_description = request.form['event_description']
@@ -396,7 +408,7 @@ def add_event():
 
             event_collection.insert_one(new_event)
 
-            return render_template('add_event_page.html', user=user)
+            return render_template('add_event_page.html', user=user_level)
         except Exception as e:
             logging.error(e)
             return "The System Encountered An Error. Please Try Again Later."
