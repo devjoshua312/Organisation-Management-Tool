@@ -100,132 +100,132 @@
                 {% endfor %}
             </ol>
 
-            <hr />
-            <div class="container">
-                <h2>AWS Info</h2>
-                <p>Bucket: {{ bucket_name }}</p>
-                <p>Objects in bucket</p>
-                <ol>
-                    {% for file in s3_files %}
-                    <li>{{ file }}</li>
-                    {% endfor %}
-                </ol>
-            </div>
-
-            {% if s3_names %}
-            <div class="container">
-                <h3>Files in 'Name'</h3>
-                <ol>
-                    {% for file in s3_names %}
-                    <li>{{ file }}</li>
-                    {% endfor %}
-                </ol>
-            </div>
-            {% endif %}
-
-            {% if s3_contents %}
-            <div class="container">
-                <h3>Details of files</h3>
-                {% for file in s3_contents %}
-                <ol>
-                    <li>
-                        <p>{{ file['Key'] }}</p>
-                        <ul>
-                            <li>Size: {{ file['Size']/1024/1024 }} MB or {{ file['Size'] }} B </li>
-                            <li>Last Modified: {{ file['LastModified'] }}</li>
-                            <li>Storage Class: {{ file['StorageClass'] }}</li>
-                            <li>ETag: {{ file['ETag'] }}</li>
-                        </ul>
-                    </li>
-                </ol>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-
-            <hr />
-
-            <div class="container">
-                <h2>Test Endpoints</h2>
-                <ul>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_fund')"
-                            class="btn btn-primary">Add
-                            Fund</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/verify_receipts')"
-                            class="btn btn-primary">Verify Receipts</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/display_donors')"
-                            class="btn btn-primary">Display Donors</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/logout')"
-                            class="btn btn-danger">Logout</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/login')"
-                            class="btn btn-primary">Login</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/create_account')"
-                            class="btn btn-primary">Creating Account</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/events')"
-                            class="btn btn-primary">View
-                            Events</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event')"
-                            class="btn btn-primary">Add Event, backend</button></li>
-                    <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event_page')"
-                            class="btn btn-primary">Add Event, frontend</button></li>
-                </ul>
-
-            </div>
         </div>
 
-        <script>
-            async function checkEndpoint(endpoint) {
-                if (endpoint === '/logout') {
-                    alert('ESVIN, DO NOT CLICK -Esvin');
-                    return;
-                }
-
-                try {
-                    const response = await fetch(endpoint, {
-                        method: 'POST'
-                    });
-
-                    if (response.ok) {
-                        alert(`Endpoint ${endpoint} contacted successfully!. Method used: POST`);
-                    } else {
-                        const getResponse = await fetch(endpoint, {
-                            method: 'GET'
-                        });
-
-                        if (getResponse.ok) {
-                            alert(`Endpoint ${endpoint} contacted successfully. Method used: GET`);
-                        } else {
-                            const errorMessage = await getResponse.text();
-                            alert(`Endpoint ${endpoint} returned an error message after retry: ${errorMessage}`);
-                        }
-                    }
-                } catch (error) {
-                    console.error(`Endpoint ${endpoint} failed to contact!`, error);
-                    alert(`Error contacting ${endpoint}`);
-                }
-            }
-
-            function updateCurrentTime() {
-                var currentTimeElement = document.getElementById('current-time');
-                var currentTime = new Date().toLocaleTimeString();
-                currentTimeElement.innerText = 'The time is: ' + currentTime;
-            }
-
-            setInterval(updateCurrentTime, 1000);
-
-            updateCurrentTime();
-        </script>
-        {% else %}
+        <hr />
         <div class="container">
-            <h1>Access Denied</h1>
-            <p>You are not Developer! Go Away!</p>
+            <h2>AWS Info</h2>
+            <p>Bucket: {{ bucket_name }}</p>
+            <p>Objects in bucket</p>
+            <ol>
+                {% for file in s3_files %}
+                <li>{{ file }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+
+        {% if s3_names %}
+        <div class="container">
+            <h3>Files in 'Name'</h3>
+            <ol>
+                {% for file in s3_names %}
+                <li>{{ file }}</li>
+                {% endfor %}
+            </ol>
         </div>
         {% endif %}
-        <hr />
-        <div class="footer" id="per-inf">
-            <p>Designed, Built by Bachu Esvin Joshua</p>
-            <p>Website hosted on Render</p>
+
+        {% if s3_contents %}
+        <div class="container">
+            <h3>Details of files</h3>
+            {% for file in s3_contents %}
+            <ol>
+                <li>
+                    <p>{{ file['Key'] }}</p>
+                    <ul>
+                        <li>Size: {{ file['Size']/1024/1024 }} MB or {{ file['Size'] }} B </li>
+                        <li>Last Modified: {{ file['LastModified'] }}</li>
+                        <li>Storage Class: {{ file['StorageClass'] }}</li>
+                        <li>ETag: {{ file['ETag'] }}</li>
+                    </ul>
+                </li>
+            </ol>
+            {% endfor %}
         </div>
+        {% endif %}
+
+
+        <hr />
+
+        <div class="container">
+            <h2>Test Endpoints</h2>
+            <ul>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_fund')" class="btn btn-primary">Add
+                        Fund</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/verify_receipts')"
+                        class="btn btn-primary">Verify Receipts</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/display_donors')"
+                        class="btn btn-primary">Display Donors</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/logout')"
+                        class="btn btn-danger">Logout</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/login')"
+                        class="btn btn-primary">Login</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/create_account')"
+                        class="btn btn-primary">Creating Account</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/events')" class="btn btn-primary">View
+                        Events</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event')"
+                        class="btn btn-primary">Add Event, backend</button></li>
+                <li class="endpoint-list-items"><button onclick="checkEndpoint('/add_event_page')"
+                        class="btn btn-primary">Add Event, frontend</button></li>
+            </ul>
+
+        </div>
+    </div>
+
+    <script>
+        async function checkEndpoint(endpoint) {
+            if (endpoint === '/logout') {
+                alert('ESVIN, DO NOT CLICK -Esvin');
+                return;
+            }
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    alert(`Endpoint ${endpoint} contacted successfully!. Method used: POST`);
+                } else {
+                    const getResponse = await fetch(endpoint, {
+                        method: 'GET'
+                    });
+
+                    if (getResponse.ok) {
+                        alert(`Endpoint ${endpoint} contacted successfully. Method used: GET`);
+                    } else {
+                        const errorMessage = await getResponse.text();
+                        alert(`Endpoint ${endpoint} returned an error message after retry: ${errorMessage}`);
+                    }
+                }
+            } catch (error) {
+                console.error(`Endpoint ${endpoint} failed to contact!`, error);
+                alert(`Error contacting ${endpoint}`);
+            }
+        }
+
+        function updateCurrentTime() {
+            var currentTimeElement = document.getElementById('current-time');
+            var currentTime = new Date().toLocaleTimeString();
+            currentTimeElement.innerText = 'The time is: ' + currentTime;
+        }
+
+        setInterval(updateCurrentTime, 1000);
+
+        updateCurrentTime();
+    </script>
+    {% else %}
+    <div class="container">
+        <h1>Access Denied</h1>
+        <p>You are not Developer! Go Away!</p>
+    </div>
+    {% endif %}
+    <hr />
+    <div class="footer" id="per-inf">
+        <p>Designed, Built by Bachu Esvin Joshua</p>
+        <p>Website hosted on Render</p>
+    </div>
 </body>
 
 </html>

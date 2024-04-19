@@ -1,7 +1,7 @@
-'''
+"""
 TODO: Add user group system (admin, developer, regular-user etc.
 TODO:
-'''
+"""
 
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_file
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user

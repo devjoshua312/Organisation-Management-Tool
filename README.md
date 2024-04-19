@@ -4,16 +4,16 @@ A Flask application for managing funds, donor information, adding new users and 
 
 ## Overview
 
-A Flask app to simulate functionality for managing funds, generating receipts, displaying donor information, and acting as a dashboard for your community. It is designed to be a simple and effective tool for tracking your user base. The program connects to a MongoDB DataBase for storing information and an AWS Cloud Server for storing the reciepts.
+A Flask app to simulate functionality for managing funds, generating receipts, displaying donor information, and acting as a dashboard for your community. It is designed to be a simple and effective tool for tracking your user base. The program connects to a MongoDB DataBase for storing information and an AWS Cloud Server for storing the receipts.
 
 ## Features
 
 - User authentication using Flask-Login
 - Add funds with details like name, date, contact number, and receipt
 - Display a list of donors with contribution details
-- Scan the reciept given by donor to see if the names match
+- Scan the receipt given by donor to see if the names match
 - Uses a reliable data storing/retrieval system
-- Cloud Storage for downloading reciepts.
+- Cloud Storage for downloading receipts.
 
 ## Installation
 
@@ -64,7 +64,7 @@ As for interacting with the AWS CS, this process is a little extensive.
 2. Now, search for 'IAM' in the search bar
    > Proceed to create a new user in your organization which can interact with these databases.
    > When setting permissions, make sure to select 'AmazonS3FullAccess' permission for your user.
-3. Finally, copy the relevant data, and update the .env file.
+3. Finally, copy the relevant data [AWS_ACCESS_KEY_ID and the AWS_SECRET_ACCESS_KEY] which can be found in the user information page, and update the .env file.
 
 > For information on creating, accessing and viewing your mongo dbs, [Mongo Docs](https://www.mongodb.com/docs/atlas/)
 
@@ -76,7 +76,7 @@ As for interacting with the AWS CS, this process is a little extensive.
 
 # Usage
 
-Run the Flask application:
+Running the Flask application:
 
 There are two ways to do this. One is with the Python Flask service:
 
@@ -99,6 +99,9 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 ```
 -w 4: Specifies the number of worker processes. (typically between 2-4).
 -b 0.0.0.0:8000: Binds Gunicorn to all network interfaces.
+if you wish to run gunicorn on a custom server;
+> 192.x.x.0:port
+
 ```
 
 > for more info and help, visit [gunicorn home page](https://docs.gunicorn.org/en/latest/run.html)
@@ -120,3 +123,20 @@ gunicorn -w 4 -b 0.0.0.0:8000 app:app
 - `/debug`: A brief debug page with the essential tools for debugging like current dir, buttons to test endpoints and such.
 
 > If you like this project, show some support by [buying me a coffee](https://www.buymeacoffee.com/joshuaesvin)
+
+## Acknowledgements
+
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+- [MongoDB](https://www.mongodb.com/)
+- [AWS S3](https://aws.amazon.com/s3/)
+- [Gunicorn](https://docs.gunicorn.org/en/latest/)
+- [Google reCaptcha](https://www.google.com/recaptcha/about/)
+- [Flask-Login](https://flask-login.readthedocs.io/en/latest/)
+- [Flask-WTF](https://flask-wtf.readthedocs.io/en/latest/)
+- [Flask-PyMongo](https://flask-pymongo.readthedocs.io/en/latest/)
+
+
+## Contributing
+
+Pull requests are welcome. I am always open to suggestions and improvements. 
+> For major changes, please open an issue first to discuss what you would like to change.
